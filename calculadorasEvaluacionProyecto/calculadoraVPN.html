@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora VPN</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: calc(100% - 10px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Calculadora de Valor Presente Neto (VPN)</h1>
+
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <mi>V</mi>
+            <mi>P</mi>
+            <msub>
+                <mi>N</mi>
+                <mrow data-mjx-texclass="ORD">
+                    <mi>T</mi>
+                    <mo>.</mo>
+                    <mi>O</mi>
+                </mrow>
+            </msub>
+            <mo>=</mo>
+            <mo>&#x2212;</mo>
+            <mi>P</mi>
+            <mo>+</mo>
+            <mfrac>
+                <mrow>
+                    <mi>F</mi>
+                    <mi>N</mi>
+                    <msub>
+                        <mi>E</mi>
+                        <mn>1</mn>
+                    </msub>
+                </mrow>
+                <mrow>
+                    <mo stretchy="false">(</mo>
+                    <mn>1</mn>
+                    <mo>+</mo>
+                    <mi>T</mi>
+                    <mo>.</mo>
+                    <mi>O</mi>
+                    <msup>
+                        <mo stretchy="false">)</mo>
+                        <mn>1</mn>
+                    </msup>
+                </mrow>
+            </mfrac>
+            <mo>+</mo>
+            <mfrac>
+                <mrow>
+                    <mi>F</mi>
+                    <mi>N</mi>
+                    <msub>
+                        <mi>E</mi>
+                        <mn>2</mn>
+                    </msub>
+                </mrow>
+                <mrow>
+                    <mo stretchy="false">(</mo>
+                    <mn>1</mn>
+                    <mo>+</mo>
+                    <mi>T</mi>
+                    <mo>.</mo>
+                    <mi>O</mi>
+                    <msup>
+                        <mo stretchy="false">)</mo>
+                        <mn>2</mn>
+                    </msup>
+                </mrow>
+            </mfrac>
+            <mo>+</mo>
+            <mo>&#x22EF;</mo>
+            <mo>+</mo>
+            <mfrac>
+                <mrow>
+                    <mi>F</mi>
+                    <mi>N</mi>
+                    <msub>
+                        <mi>E</mi>
+                        <mi>n</mi>
+                    </msub>
+                </mrow>
+                <mrow>
+                    <mo stretchy="false">(</mo>
+                    <mn>1</mn>
+                    <mo>+</mo>
+                    <mi>T</mi>
+                    <mo>.</mo>
+                    <mi>O</mi>
+                    <msup>
+                        <mo stretchy="false">)</mo>
+                        <mi>n</mi>
+                    </msup>
+                </mrow>
+            </mfrac>
+        </math>
+
+        <div class="form-group">
+            <label for="P">Inversión Inicial (P):</label>
+            <input type="number" id="P" step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="TO">Tasa de Oportunidad (%) (TO):</label>
+            <input type="number" id="TO" step="0.01">
+        </div>
+        <div id="fneInputs">
+            <div class="form-group">
+                <label for="FNE1">FNE 1:</label>
+                <input type="number" id="FNE1" step="0.01">
+            </div>
+        </div>
+        <div class="form-group">
+            <button onclick="agregarFNE()">Agregar FNE</button>
+        </div>
+        
+        <div class="form-group">
+            <button onclick="calcularVPN()">Calcular VPN</button>
+        </div>
+        <div class="result" id="resultado"></div>
+    </div>
+
+    <script>
+        function agregarFNE() {
+            const fneInputs = document.getElementById('fneInputs');
+            const numFNE = fneInputs.querySelectorAll('input[type="number"]').length + 1;
+            const newInput = document.createElement('div');
+            newInput.classList.add('form-group');
+            newInput.innerHTML = `<label for="FNE${numFNE}">FNE ${numFNE}:</label>
+                                  <input type="number" id="FNE${numFNE}" step="0.01">`;
+            fneInputs.appendChild(newInput);
+        }
+
+        function calcularVPN() {
+            const P = parseFloat(document.getElementById('P').value);
+            const TO = parseFloat(document.getElementById('TO').value);
+
+            if (isNaN(P) || isNaN(TO)) {
+                alert('Por favor, ingrese valores válidos para la inversión inicial y la tasa de oportunidad.');
+                return;
+            }
+
+            const fneInputs = document.getElementById('fneInputs').querySelectorAll('input[type="number"]');
+            let VPN = -P;
+            for (let i = 0; i < fneInputs.length; i++) {
+                const FNE = parseFloat(fneInputs[i].value);
+                if (!isNaN(FNE)) {
+                    VPN += FNE / Math.pow(1 + TO / 100, i + 1);
+                }
+            }
+
+            const resultadoElement = document.getElementById('resultado');
+            resultadoElement.innerText = `El Valor Presente Neto (VPN) es: ${VPN.toFixed(2)}`;
+
+            // Mostrar mensaje adicional basado en el valor de VPN
+            if (VPN > 0) {
+                resultadoElement.innerHTML += '<br>La Alternativa se acepta.';
+            } else if (VPN === 0) {
+                resultadoElement.innerHTML += '<br>Es Indiferente aceptar o no.';
+            } else {
+                resultadoElement.innerHTML += '<br>La Alternativa se rechaza.';
+            }
+        }
+    </script>
+</body>
+
+</html>

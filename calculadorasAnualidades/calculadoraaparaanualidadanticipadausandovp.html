@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de A anualidad vencida usando VP</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: calc(100% - 10px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Calculadora de Monto Anual (A)</h1>
+
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <mi>A</mi>
+            <mo>=</mo>
+            <mfrac>
+                <mrow>
+                    <mi>V</mi>
+                    <mi>P</mi>
+                </mrow>
+                <mrow>
+                    <mo stretchy="false">(</mo>
+                    <mn>1</mn>
+                    <mo>+</mo>
+                    <mi>i</mi>
+                    <mo stretchy="false">)</mo>
+                    <mo>×</mo>
+                    <mfrac>
+                        <mrow data-mjx-texclass="INNER">
+                            <mo data-mjx-texclass="OPEN">(</mo>
+                            <mo stretchy="false">(</mo>
+                            <mn>1</mn>
+                            <mo>+</mo>
+                            <mi>i</mi>
+                            <msup>
+                                <mo stretchy="false">)</mo>
+                                <mi>n</mi>
+                            </msup>
+                            <mo>−</mo>
+                            <mn>1</mn>
+                            <mo data-mjx-texclass="CLOSE">)</mo>
+                        </mrow>
+                        <mrow>
+                            <mi>i</mi>
+                            <mo>×</mo>
+                            <mrow data-mjx-texclass="INNER">
+                                <mo data-mjx-texclass="OPEN">(</mo>
+                                <mo stretchy="false">(</mo>
+                                <mn>1</mn>
+                                <mo>+</mo>
+                                <mi>i</mi>
+                                <msup>
+                                    <mo stretchy="false">)</mo>
+                                    <mrow data-mjx-texclass="ORD">
+                                        <mi>n</mi>
+                                    </mrow>
+                                </msup>
+                                <mo data-mjx-texclass="CLOSE">)</mo>
+                            </mrow>
+                        </mrow>
+                    </mfrac>
+                </mrow>
+            </mfrac>
+        </math>
+
+        <div class="form-group">
+            <label for="VP">Valor Presente (VP):</label>
+            <input type="number" id="VP" step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="i">Tasa de Interés (%) (i):</label>
+            <input type="number" id="i" step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="n">Número de Períodos (n):</label>
+            <input type="number" id="n">
+        </div>
+        <div class="form-group">
+            <button onclick="calcularMontoAnual()">Calcular Monto Anual</button>
+        </div>
+        <div class="result" id="resultado"></div>
+    </div>
+
+    <script>
+        function calcularMontoAnual() {
+            const VP = parseFloat(document.getElementById('VP').value);
+            let i = parseFloat(document.getElementById('i').value);
+            const n = parseFloat(document.getElementById('n').value);
+
+            if (isNaN(VP) || isNaN(i) || isNaN(n)) {
+                alert('Por favor, ingrese valores válidos.');
+                return;
+            }
+
+            // Convertir la tasa de interés a decimal
+            i = i / 100;
+
+            // Calcular el Monto Anual (A) usando la fórmula proporcionada
+            const A = VP / ((1 + i) * ((Math.pow(1 + i, n) - 1) / (i * Math.pow(1 + i, n))));
+
+            document.getElementById('resultado').innerText = `El Monto Anual es: ${A.toFixed(2)}`;
+        }
+    </script>
+</body>
+
+</html>

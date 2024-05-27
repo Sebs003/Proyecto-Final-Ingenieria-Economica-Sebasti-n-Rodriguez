@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de A anualidad anticipada usando VF</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: calc(100% - 10px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Calculadora de Valor Futuro (VF)</h1>
+
+        <math xmlns="http://www.w3.org/1998/Math/MathML" class="mb-3">
+            <mrow>
+              <mi>A</mi>
+              <mo>=</mo>
+              <mfrac>
+                <mrow>
+                  <mi>VF</mi>
+                </mrow>
+                <mrow>
+                    <mo stretchy="false">[</mo>
+                    <mfrac>
+                        <mrow>
+                            <mo stretchy="false">(</mo>
+                            <mn>1</mn>
+                            <mo>+</mo>
+                            <mi>i</mi>
+                            <mo stretchy="false">)</mo>
+                            <mo>×</mo>
+                            <mo stretchy="false">(</mo>
+                            <msup>
+                              <mrow>
+                                <mn>1</mn>
+                                <mo>+</mo>
+                                <mi>i</mi>
+                                <mo stretchy="false">)</mo>
+                              </mrow>
+                              
+                              <mi>n</mi>
+                            </msup>
+                            <mo>-</mo>
+                            <mn>1</mn>
+                            
+                          </mrow>
+                          <mrow>
+                            <mi>i</mi>
+                          </mrow>
+                    </mfrac>
+                    <mo stretchy="false">]</mo>
+                </mrow>
+              </mfrac>
+            </mrow>
+          </math>
+        
+        <div class="form-group">
+            <label for="A">Monto Anual (A):</label>
+            <input type="number" id="A" step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="i">Tasa de Interés (%) (i):</label>
+            <input type="number" id="i" step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="n">Número de Períodos (n):</label>
+            <input type="number" id="n">
+        </div>
+        <div class="form-group">
+            <button onclick="calcularValorFuturo()">Calcular Valor Futuro</button>
+        </div>
+        <div class="result" id="resultado"></div>
+    </div>
+
+    <script>
+        function calcularValorFuturo() {
+            const A = parseFloat(document.getElementById('A').value);
+            let i = parseFloat(document.getElementById('i').value);
+            const n = parseFloat(document.getElementById('n').value);
+
+            if (isNaN(A) || isNaN(i) || isNaN(n)) {
+                alert('Por favor, ingrese valores válidos.');
+                return;
+            }
+
+            // Convertir la tasa de interés a decimal
+            i = i / 100;
+
+            // Calcular el Valor Futuro (VF) usando la fórmula proporcionada
+            const VF = A * (1 + i) * ((Math.pow(1 + i, n) - 1) / i);
+
+            document.getElementById('resultado').innerText = `El Valor Futuro es: ${VF.toFixed(2)}`;
+        }
+    </script>
+</body>
+
+</html>

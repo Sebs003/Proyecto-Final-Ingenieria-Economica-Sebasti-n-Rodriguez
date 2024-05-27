@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Financiera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        #resultados {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora Financiera</h1>
+        <div class="form-group">
+            <label for="tipo_calculo">Tipo de Cálculo:</label>
+            <select id="tipo_calculo">
+                <option value="Anualidades">Anualidades</option>
+                <option value="Series Variables">Series Variables</option>
+                <option value="Evaluar Inversión">Evaluar Inversión</option>
+            </select>
+        </div>
+
+        <div id="anualidades" class="form-group">
+            <label for="pago">Pago:</label>
+            <input type="number" id="pago" step="any">
+            <label for="tasa_interes">Tasa de Interés:</label>
+            <input type="number" id="tasa_interes" step="any">
+            <label for="n_periodos">Número de Períodos:</label>
+            <input type="number" id="n_periodos">
+            <label for="tiempo_gracia">Tiempo de Gracia:</label>
+            <input type="number" id="tiempo_gracia">
+            <label for="tipo_anualidad">Tipo de Anualidad:</label>
+            <select id="tipo_anualidad">
+                <option value="anticipada">Anticipada</option>
+                <option value="vencida">Vencida</option>
+            </select>
+        </div>
+
+        <div id="series_variables" class="form-group">
+            <label for="pago_inicial">Pago Inicial:</label>
+            <input type="number" id="pago_inicial" step="any">
+            <label for="tasa_interes_sv">Tasa de Interés:</label>
+            <input type="number" id="tasa_interes_sv" step="any">
+            <label for="n_periodos_sv">Número de Períodos:</label>
+            <input type="number" id="n_periodos_sv">
+            <label for="tiempo_gracia_sv">Tiempo de Gracia:</label>
+            <input type="number" id="tiempo_gracia_sv">
+            <label for="tipo_serie">Tipo de Serie:</label>
+            <select id="tipo_serie">
+                <option value="creciente_lineal">Creciente Lineal</option>
+                <option value="decreciente_lineal">Decreciente Lineal</option>
+                <option value="creciente_exponencial">Creciente Exponencial</option>
+                <option value="decreciente_exponencial">Decreciente Exponencial</option>
+            </select>
+            <label for="incremento">Incremento:</label>
+            <input type="number" id="incremento" step="any">
+            <label for="decremento">Decremento:</label>
+            <input type="number" id="decremento" step="any">
+            <label for="tasa_crecimiento">Tasa de Crecimiento:</label>
+            <input type="number" id="tasa_crecimiento" step="any">
+            <label for="tasa_decrecimiento">Tasa de Decrecimiento:</label>
+            <input type="number" id="tasa_decrecimiento" step="any">
+        </div>
+
+        <div id="evaluar_inversion" class="form-group">
+            <label for="flujos">Flujos:</label>
+            <input type="text" id="flujos">
+            <label for="tasa_descuento">Tasa de Descuento:</label>
+            <input type="number" id="tasa_descuento" step="any">
+        </div>
+
+        <button id="calcular">Calcular</button>
+
+        <div id="resultados"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function ocultarTodo() {
+                $('#anualidades').hide();
+                $('#series_variables').hide();
+                $('#evaluar_inversion').hide();
+            }
+
+            ocultarTodo();
+
+            $('#tipo_calculo').change(function() {
+                ocultarTodo();
+                if ($(this).val() == 'Anualidades') {
+                    $('#anualidades').show();
+                } else if ($(this).val() == 'Series Variables') {
+                    $('#series_variables').show();
+                } else if ($(this).val() == 'Evaluar Inversión') {
+                    $('#evaluar_inversion').show();
+                }
+            });
+
+            $('#calcular').click(function() {
+                let tipo_calculo = $('#tipo_calculo').val();
+                let resultados = {};
+
+                if (tipo_calculo == 'Anualidades') {
+                    let pago = parseFloat($('#pago').val());
+                    let tasa_interes = parseFloat($('#tasa_interes').val());
+                    let n_periodos = parseInt($('#n_periodos').val());
+                    let tiempo_gracia = parseInt($('#tiempo_gracia').val());
+                    let tipo_anualidad = $('#tipo_anualidad').val();
+
+                    // Lógica de cálculo
+                    resultados = calcularAnualidades(pago, tasa_interes, n_periodos, tiempo_gracia, tipo_anualidad);
+                } else if (tipo_calculo == 'Series Variables') {
+                    let pago_inicial = parseFloat($('#pago_inicial').val());
+                    let tasa_interes_sv = parseFloat($('#tasa_interes_sv').val());
+                    let n_periodos_sv = parseInt($('#n_periodos_sv').val());
+                    let tiempo_gracia_sv = parseInt($('#tiempo_gracia_sv').val());
+                    let tipo_serie = $('#tipo_serie').val();
+                    let incremento = parseFloat($('#incremento').val());
+                    let decremento = parseFloat($('#decremento').val());
+                    let tasa_crecimiento = parseFloat($('#tasa_crecimiento').val());
+                    let tasa_decrecimiento = parseFloat($('#tasa_decrecimiento').val());
+
+                    // Lógica de cálculo
+                    resultados = calcularSeriesVariables(pago_inicial, tasa_interes_sv, n_periodos_sv, tiempo_gracia_sv, tipo_serie, incremento, decremento, tasa_crecimiento, tasa_decrecimiento);
+                } else if (tipo_calculo == 'Evaluar Inversión') {
+                    let flujos = $('#flujos').val().split(',').map(parseFloat);
+                    let tasa_descuento = parseFloat($('#tasa_descuento').val());
+
+                    // Lógica de cálculo
+                    resultados = evaluarInversion(flujos, tasa_descuento);
+                }
+
+                // Mostrar resultados
+                $('#resultados').html('<pre>' + JSON.stringify(resultados, null, 2) + '</pre>');
+            });
+
+            function calcularAnualidades(pago, tasa_interes, n_periodos, tiempo_gracia, tipo_anualidad) {
+                let n_periodos_efectivos = n_periodos - tiempo_gracia;
+                let vp, vf;
+                if (tipo_anualidad === 'vencida') {
+                    vp = valorPresenteAnualidadVencida(pago, tasa_interes, n_periodos_efectivos);
+                    vf = valorFuturoAnualidadVencida(pago, tasa_interes, n_periodos_efectivos);
+                } else if (tipo_anualidad === 'anticipada') {
+                    vp = valorPresenteAnualidadAnticipada(pago, tasa_interes, n_periodos_efectivos);
+                    vf = valorFuturoAnualidadAnticipada(pago, tasa_interes, n_periodos_efectivos);
+                }
+                vp *= Math.pow((1 + tasa_interes), tiempo_gracia);
+                return { 'valor_presente': vp, 'valor_futuro': vf };
+            }
+
+            function valorPresenteAnualidadVencida(pago, tasa_interes, n_periodos) {
+                let factor_vencida = (1 - Math.pow((1 + tasa_interes), -n_periodos)) / tasa_interes;
+                return pago * factor_vencida;
+            }
+
+            function valorPresenteAnualidadAnticipada(pago, tasa_interes, n_periodos) {
+                let factor_anticipada = ((1 - Math.pow((1 + tasa_interes), -n_periodos)) / tasa_interes) * (1 + tasa_interes);
+                return pago * factor_anticipada;
+            }
+
+            function valorFuturoAnualidadVencida(pago, tasa_interes, n_periodos) {
+                let factor_vencida = (Math.pow((1 + tasa_interes), n_periodos) - 1) / tasa_interes;
+                return pago * factor_vencida;
+            }
+
+            function valorFuturoAnualidadAnticipada(pago, tasa_interes, n_periodos) {
+                let factor_anticipada = ((Math.pow((1 + tasa_interes), n_periodos) - 1) / tasa_interes) * (1 + tasa_interes);
+                return pago * factor_anticipada;
+            }
+
+            function calcularSeriesVariables(pago_inicial, tasa_interes, n_periodos, tiempo_gracia, tipo_serie, incremento, decremento, tasa_crecimiento, tasa_decrecimiento) {
+                let n_periodos_efectivos = n_periodos - tiempo_gracia;
+                let vp, vf;
+                if (tipo_serie === 'creciente_lineal') {
+                    vp = valorPresenteSerieCrecienteLineal(pago_inicial, tasa_interes, incremento, n_periodos_efectivos);
+                    vf = valorFuturoSerieCrecienteLineal(pago_inicial, tasa_interes, incremento, n_periodos_efectivos);
+                } else if (tipo_serie === 'decreciente_lineal') {
+                    vp = valorPresenteSerieDecrecienteLineal(pago_inicial, tasa_interes, decremento, n_periodos_efectivos);
+                    vf = valorFuturoSerieDecrecienteLineal(pago_inicial, tasa_interes, decremento, n_periodos_efectivos);
+                } else if (tipo_serie === 'creciente_exponencial') {
+                    vp = valorPresenteSerieCrecienteExponencial(pago_inicial, tasa_interes, tasa_crecimiento, n_periodos_efectivos);
+                    vf = valorFuturoSerieCrecienteExponencial(pago_inicial, tasa_interes, tasa_crecimiento, n_periodos_efectivos);
+                } else if (tipo_serie === 'decreciente_exponencial') {
+                    vp = valorPresenteSerieDecrecienteExponencial(pago_inicial, tasa_interes, tasa_decrecimiento, n_periodos_efectivos);
+                    vf = valorFuturoSerieDecrecienteExponencial(pago_inicial, tasa_interes, tasa_decrecimiento, n_periodos_efectivos);
+                }
+                vp *= Math.pow((1 + tasa_interes), tiempo_gracia);
+                return { 'valor_presente': vp, 'valor_futuro': vf };
+            }
+
+            function valorPresenteSerieCrecienteLineal(pago_inicial, tasa_interes, incremento, n_periodos) {
+                let vp = 0;
+                for (let i = 0; i < n_periodos; i++) {
+                    vp += pago_inicial / Math.pow((1 + tasa_interes), i);
+                    pago_inicial += incremento;
+                }
+                return vp;
+            }
+
+            function valorFuturoSerieCrecienteLineal(pago_inicial, tasa_interes, incremento, n_periodos) {
+                let vf = 0;
+                for (let i = 0; i < n_periodos; i++) {
+                    vf += pago_inicial * Math.pow((1 + tasa_interes), (n_periodos - i - 1));
+                    pago_inicial += incremento;
+                }
+                return vf;
+            }
+
+            function valorPresenteSerieDecrecienteLineal(pago_inicial, tasa_interes, decremento, n_periodos) {
+                let vp = 0;
+                for (let i = 0; i < n_periodos; i++) {
+                    vp += pago_inicial / Math.pow((1 + tasa_interes), i);
+                    pago_inicial -= decremento;
+                }
+                return vp;
+            }
+
+            function valorFuturoSerieDecrecienteLineal(pago_inicial, tasa_interes, decremento, n_periodos) {
+                let vf = 0;
+                for (let i = 0; i < n_periodos; i++) {
+                    vf += pago_inicial * Math.pow((1 + tasa_interes), (n_periodos - i - 1));
+                    pago_inicial -= decremento;
+                }
+                return vf;
+            }
+
+            function valorPresenteSerieCrecienteExponencial(pago_inicial, tasa_interes, tasa_crecimiento, n_periodos) {
+                let vp = 0;
+                for (let i = 0; i < n_periodos; i++) {
+                    vp += pago_inicial / Math.pow((1 + tasa_interes), i);
+                    pago_inicial *= (1 + tasa_crecimiento);
+                }
+                return vp;
+            }
+
+            function valorFuturoSerieCrecienteExponencial(pago_inicial, tasa_interes, tasa_crecimiento, n_periodos) {
+                let vf = 0;
+                for (let i = 0; i < n_periodos; i++) {
+                    vf += pago_inicial * Math.pow((1 + tasa_interes), (n_periodos - i - 1));
+                    pago_inicial *= (1 + tasa_crecimiento);
+                }
+                return vf;
+            }
+
+            function valorPresenteSerieDecrecienteExponencial(pago_inicial, tasa_interes, tasa_decrecimiento, n_periodos) {
+                let vp = 0;
+                for (let i = 0; i < n_periodos; i++) {
+                    vp += pago_inicial / Math.pow((1 + tasa_interes), i);
+                    pago_inicial *= (1 - tasa_decrecimiento);
+                }
+                return vp;
+            }
+
+            function valorFuturoSerieDecrecienteExponencial(pago_inicial, tasa_interes, tasa_decrecimiento, n_periodos) {
+                let vf = 0;
+                for (let i = 0; i < n_periodos; i++) {
+                    vf += pago_inicial * Math.pow((1 + tasa_interes), (n_periodos - i - 1));
+                    pago_inicial *= (1 - tasa_decrecimiento);
+                }
+                return vf;
+            }
+
+            function evaluarInversion(flujos, tasa_descuento) {
+                let vpn = 0;
+                for (let i = 0; i < flujos.length; i++) {
+                    vpn += flujos[i] / Math.pow((1 + tasa_descuento), i);
+                }
+                let tir = calcularTIR(flujos);
+                let cb = vpn / Math.abs(flujos[0]);
+                let tr = calcularTR(flujos);
+
+                return {
+                    'valor_presente_neto': vpn,
+                    'tasa_interna_de_retorno': tir,
+                    'coeficiente_beneficio_costo': cb,
+                    'tiempo_de_recuperacion': tr
+                };
+            }
+
+            function calcularTIR(flujos) {
+                let tir = 0.1;  // Tasa inicial de prueba
+                let precision = 0.0001;  // Precisión deseada
+                let iteraciones_max = 1000;  // Número máximo de iteraciones
+                for (let iter = 0; iter < iteraciones_max; iter++) {
+                    let vpn = 0;
+                    for (let i = 0; i < flujos.length; i++) {
+                        vpn += flujos[i] / Math.pow((1 + tir), i);
+                    }
+                    if (Math.abs(vpn) < precision) {
+                        return tir;
+                    }
+                    tir += vpn / Math.abs(vpn) * precision;
+                }
+                return tir;
+            }
+
+            function calcularTR(flujos) {
+                let acumulado = 0;
+                for (let i = 0; i < flujos.length; i++) {
+                    acumulado += flujos[i];
+                    if (acumulado >= 0) {
+                        return i + 1;
+                    }
+                }
+                return flujos.length;
+            }
+        });
+    </script>
+</body>
+</html>
